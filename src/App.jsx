@@ -25,7 +25,22 @@ function App() {
     const ws = XLSX.utils.json_to_sheet(rows);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-    XLSX.writeFile(wb, "table_data.xlsx");
+
+    // Генерация файла и создание ссылки для скачивания
+    const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([wbout], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    const url = URL.createObjectURL(blob);
+
+    // Создание ссылки для скачивания и клик по ней
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "table_data.xlsx";
+    a.click();
+
+    // Освобождение ресурсов
+    URL.revokeObjectURL(url);
   };
 
   const handleInputChange = (e) => {
